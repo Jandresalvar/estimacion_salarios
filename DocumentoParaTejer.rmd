@@ -1,44 +1,80 @@
 ---
-title: "Estimación del Salario de los Ocupados en el Area Metropolitana del Valle de Aburrá"
-author: "Jesús Andrés Álvarez Alvarado"
-date: "2024-03-22"
-output: 
-  word_document:
-    toc: true
-    toc_depth: 4
+header-includes:
+- \usepackage{longtable}
+- \usepackage[utf8]{inputenc}
+- \usepackage[provide=*]{babel}
+- \setlength{\parindent}{1.25cm}
+- \usepackage{amsmath}
+- \usepackage{array}
+- \usepackage{float}
+- \usepackage{multirow}
+- \renewcommand{\contentsname}{Tabla de Contenidos}
+- \renewcommand{\listfigurename}{Lista de Figuras}
+- \renewcommand{\listtablename}{Lista de Tablas}
+output:
+  pdf_document: 
+    number_sections: true
+  word_document: default
+fontsize: 12pt
+papersize: letter
+geometry: margin = 1in
+language: es
+editor_options:
+  markdown:
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
-```{r, include=FALSE}
+knitr::opts_chunk$set(echo = F, fig.align = "center", fig.pos = "H")
+library(kableExtra)
+library(knitr)
+library(leaps)
 library(data.table)
-library(gtsummary)
 ```
 
-# Cruce, Limpieza de Datos y Elección de Variables
+```{=tex}
+\input{titlepage}
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+\thispagestyle{empty}
+\listoffigures
+\listoftables
+\newpage
+```
+
+```{=tex}
+\pagestyle{myheadings}
+\setcounter{page}{3}
+```
+
+\section{Cruce, Limpieza de Datos y Elección de Variables}
 
 Lo primero será seleccionar las variables, filtrar por área y en general, alistar los datos para ingresarlos al modelo.
 
-## Variables
+\subsection{Variables}
 
-Las variables seleccionadas se encuentran en dos modulos, 'Características generales, seguridad social en salud y educación' y 'Ocupados'. La descripción completa de los modulos y en detalle de cada variable se encuentra en los metadatos (diccionario). Las variables son:
+Las variables seleccionadas se encuentran en dos modulos, *Características generales, seguridad social en salud y educación* y *Ocupados*. La descripción completa de los modulos y en detalle de cada variable se encuentra en los metadatos (diccionario). Las variables son:
 
-Del modulo de 'Características generales, seguridad social en salud y educación':
-- DIRECTORIO, SECUENCIA_P, HOGAR, ORDEN: son los identificadores de la vivienda, hogar y personas. Estas variables se utilizan para unir las variables de cada modulo
-- AREA: es la variable que permite filtrar los datos por area. En este caso, como se trabaja con el Area Metropolitana del Valle de Aburrá, se filtrará por el valor 05 de la variable
-- P3271: cuál es el sexo al nacer de la persona. Para capturar si hay brechas salariales asociadas al sexo
-- P6040: cuántos años cumplidos tiene la persona. Para capturar diferencias salariales entre edades
-- P6050: cuál es el parentezco con el jefe del hogar. Para capturar cómo los roles en el hogar pueden influenciar el salario.
-- P6080: se reconoce dentro de alguna etnia? Para capturar brechas salariales entre diferentes etnias
-- P6070: estado cívil
-- P3042: cuál es el mayor nivel educativo alcanzado y el último grado o semestre aprobado
+Del modulo de *Características generales, seguridad social en salud y educación*:
+\begin{itemize}
+ \item DIRECTORIO, SECUENCIA\_P, HOGAR, ORDEN: son los identificadores de la vivienda, hogar y personas. Estas variables se utilizan para unir las variables de cada modulo
+ \item AREA: es la variable que permite filtrar los datos por area. En este caso, como se trabaja con el Area Metropolitana del Valle de Aburrá, se filtrará por el valor 05 de la variable
+ \item P3271: ¿cuál es el sexo al nacer? Para capturar si hay brechas salariales asociadas al sexo
+ \item P6040: ¿cuántos años cumplidos tiene? Para capturar diferencias salariales entre edades
+ \item P6050: ¿cuál es el parentezco con el jefe del hogar? Para capturar cómo los roles en el hogar pueden influenciar el salario
+ \item P6080: ¿se reconoce dentro de alguna etnia? Para capturar brechas salariales entre diferentes etnias
+ \item P6070: estado cívil
+ \item P3042: ¿cuál es el mayor nivel educativo alcanzado y el último grado o semestre aprobado?
+\end{itemize}
 
-Del modulo de 'Ocupados':
-- DIRECTORIO, HOGAR, SECUENCIA_P, ORDEN: son los identificadores de la vivienda, hogar y personas. Estas variables se utilizan para unir las variables de cada modulo
-- AREA: es la variable que permite filtrar los datos por area. En este caso, como se trabaja con el Area Metropolitana del Valle de Aburrá, se filtrará por el valor 05 de la variable
-- INGLABO: será la variable respuesta, ya que hace referencia a los ingresos laborales mensuales de la persona
-- P6440: para realizar este trabajo tiene usted algún tipo de contrato? Pretende ser una aproximación para capturar información de formalidad e informalidad
-- P6920: está cotizando actualmente a un fondo de pensiones? También intenta aproximar a las personas que son formales e informales. Pues, es poco común que los informales coticen a pensión. No se utiliza afiliación a salud, pues, existe una gran cobertura de salud bajo regimen subsidiado en Colombia, lo que no permite segmentar correctamente formales de informales
+Del modulo de *Ocupados*:
+\begin{itemize}
+ \item DIRECTORIO, HOGAR, SECUENCIA\_P, ORDEN: son los identificadores de la vivienda, hogar y personas. Estas variables se utilizan para unir las variables de cada modulo
+ \item AREA: es la variable que permite filtrar los datos por area. En este caso, como se trabaja con el Area Metropolitana del Valle de Aburrá, se filtrará por el valor 05 de la variable
+ \item INGLABO: será la variable respuesta, ya que hace referencia a los ingresos laborales mensuales de la persona
+ \item P6440: ¿para realizar este trabajo tiene usted algún tipo de contrato? Pretende ser una aproximación para capturar información de formalidad e informalidad
+ \item P6920: ¿está cotizando actualmente a un fondo de pensiones? También intenta aproximar a las personas que son formales e informales. Pues, es poco común que los informales coticen a pensión. No se utiliza afiliación a salud, pues, existe una gran cobertura de salud bajo regimen subsidiado en Colombia, lo que no permite segmentar correctamente formales de informales
+ \item P6960: ¿cuántos años lleva afiliado al fondo de pensiones? Dado que no se pregunta directamente cuántos años de experiencia tiene la persona, se intenta aproximar la experiencia por medio de los años cotizados a pensión. Esto claramente excluirá a la población informal, pero es la variable más próxima a la experiencia
+ \end{itemize}
 
