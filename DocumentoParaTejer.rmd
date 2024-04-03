@@ -195,38 +195,40 @@ length(modulo_caracteristicas$id_persona) == length(unique(modulo_caracteristica
 length(modulo_ocupados$id_persona) == length(unique(modulo_ocupados$id_persona))
 
 # Comprobado que son únicos, se procede a unir
-datos_limpios <- merge(x = modulo_caracteristicas,
+datos_cruce <- merge(x = modulo_caracteristicas,
               y = modulo_ocupados,
               by = 'id_persona')
 # Se elimina area.y y se renombra area.x
-datos_limpios <- datos_limpios[,!"area.y"]
-datos_limpios <- rename(datos_limpios, area = area.x)
+datos_cruce <- datos_cruce[,!"area.y"]
+datos_cruce <- rename(datos_cruce, area = area.x)
 
 # Otra verificación de que la unión es correcta, es que el número de datos de ocupados y datos limpios es igual
-length(nrow(modulo_caracteristicas)) == length(nrow(datos_limpios))
+length(nrow(modulo_caracteristicas)) == length(nrow(datos_cruce))
 
 # Se guardan los datos limpios en un nuevo dataset
-fwrite(datos_limpios, file = "sep2022/datosLimpios.CSV")
+fwrite(datos_cruce, file = "sep2022/datosCruce.CSV")
 ```
 
 ```{r}
 kable(
-  head(datos_limpios[, c("id_persona", "area", "sexo", "edad",
+  head(datos_cruce[, c("id_persona", "area", "sexo", "edad",
                          "jefe_hogar", "estado_civil", "etnia")]),
-  caption = "Datos Listos para Modelar 1",
+  caption = "Datos Cruce 1",
   escape = F,
   booktab = T,
   align = "c",
   row.names = T)
 
 kable(
-  head(datos_limpios[, c("educacion", "salario", "contrato",
+  head(datos_cruce[, c("educacion", "salario", "contrato",
                          "cotiza_pension", "exp_cotiza", "exp_potencial")]),
-  caption = "Datos Listos para Modelar 2",
+  caption = "Datos Cruce 2",
   escape = F,
   booktab = T,
   align = "c",
   row.names = T)
 ```
 
-Realizada la unión, en las tablas 3 y 4 se puede visualizar la estructura final de los datos que se ingresarán al modelo.
+Realizada la unión, en las tablas 3 y 4 se puede visualizar la estructura final de los datos de las variables de interés.
+
+\section{Análisis Descriptivo de las Variables}
