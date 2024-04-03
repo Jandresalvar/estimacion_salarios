@@ -52,44 +52,45 @@ library(stats)
 \setcounter{page}{3}
 ```
 
-\section{Variables, Limpieza de Datos y Cruce de Modulos}
+\section{Variables, Limpieza de Datos y Cruce de Módulos}
 
 Lo primero será seleccionar las variables, filtrar por área y en general, alistar los datos para ingresarlos al modelo.
 
 \subsection{Variables}
 
-Las variables seleccionadas se encuentran en dos modulos, \emph{Características generales, seguridad social en salud y educación} y \emph{Ocupados}. La descripción completa de los modulos y en detalle de cada variable se encuentra en los metadatos (diccionario). Las variables son:
+Las variables seleccionadas se encuentran en dos módulos, \emph{Características generales, seguridad social en salud y educación} y \emph{Ocupados}. La descripción completa de los módulos y en detalle de cada variable se encuentra en los metadatos (diccionario). Las variables son:
 
-Del modulo de \emph{Características generales, seguridad social en salud y educación}:
+Del módulo de \emph{Características generales, seguridad social en salud y educación}:
 
 \begin{itemize}
- \item \emph{DIRECTORIO}, \emph{SECUENCIA\_P} y \emph{ORDEN}: son los identificadores de la vivienda, hogar y persona, respectivamente. Estas variables se concatenan en una sola para obtener un identificador y este se utiliza a modo de llave para unir los diferentes modulos. La unión de estas variables se nombrará como \textbf{id\_persona} en los datos limpios
+ \item \emph{DIRECTORIO}, \emph{SECUENCIA\_P} y \emph{ORDEN}: son los identificadores de la vivienda, hogar y persona, respectivamente. Estas variables se concatenan en una sola para obtener un identificador y este se utiliza a modo de llave para unir los diferentes módulos. La unión de estas variables se nombrará como \textbf{id\_persona} en los datos limpios
  \item \emph{AREA}: es la variable que permite filtrar los datos por área. En este caso, como se trabaja con el Área Metropolitana del Valle de Aburrá, se filtrará por el valor $05$ de la variable. Conservará el nombre \textbf{area} en los datos limpios
  \item \emph{P3271}: ¿cuál es el sexo al nacer? Para capturar si hay brechas salariales asociadas al sexo. Es una variable cualitativa que toma el valor de $1$ si responde \emph{Masculino} y $2$ si responde \emph{Femenino}. Se renombrará por \textbf{sexo} en los datos limpios y el grupo base será $1 =$ \emph{Masculino}
  \item \emph{P6040}: ¿cuántos años cumplidos tiene? Para capturar diferencias salariales entre edades. Es una variable numérica. Se renombrará por \textbf{edad} en los datos limpios
- \item \emph{P6050}: ¿cuál es el parentezco con el jefe del hogar? Para capturar cómo los roles en el hogar pueden influenciar el salario. Es una variable cualitativa que toma el valor de $1$ para \emph{Jefe (a) del hogar}; $2$ para \emph{Pareja, esposo(a), cónyuge, compañero(a)}; $3$ para \emph{Hijo(a), hijastro(a)}; $4$ para \emph{Nieto(a)}; $5$ para \emph{Otro pariente}; $6$ para \emph{Empleado(a) del servicio doméstico y sus parientes}; $7$ para \emph{Pensionista}; $8$ para \emph{Trabajador}; y $9$ para \emph{Otro no pariente}. Se renombrará por \textbf{jefe\_hogar} en los datos limpios y el grupo base será $9 =$ \emph{Otro no pariente}
-  \item \emph{P6070}: estado cívil. Es una variable cualitativa que toma el valor de $1$ para \emph{No esta casado(a) y vive en pareja hace menos de dos años}; $2$ para \emph{No esta casado (a) y vive en pareja hace dos años o más}; $3$ para \emph{Esta casado (a)}; $4$ para \emph{Esta separado (a) o divorciado (a)}; $5$ para \emph{Esta viudo (a)}; y $6$ para \emph{Esta soltero (a)}. Se renombrará por \textbf{estado\_civil} en los datos limpios y el grupo base será $6 =$ \emph{Esta soltero (a)} 
+ \item \emph{P6050}: ¿cuál es el parentesco con el jefe del hogar? Para capturar cómo los roles en el hogar pueden influenciar el salario. Es una variable cualitativa que toma el valor de $1$ para \emph{Jefe (a) del hogar}; $2$ para \emph{Pareja, esposo(a), cónyuge, compañero(a)}; $3$ para \emph{Hijo(a), hijastro(a)}; $4$ para \emph{Nieto(a)}; $5$ para \emph{Otro pariente}; $6$ para \emph{Empleado(a) del servicio doméstico y sus parientes}; $7$ para \emph{Pensionista}; $8$ para \emph{Trabajador}; y $9$ para \emph{Otro no pariente}. Se renombrará por \textbf{jefe\_hogar} en los datos limpios y el grupo base será $9 =$ \emph{Otro no pariente}
+  \item \emph{P6070}: estado civil. Es una variable cualitativa que toma el valor de $1$ para \emph{No está casado(a) y vive en pareja hace menos de dos años}; $2$ para \emph{No está casado (a) y vive en pareja hace dos años o más}; $3$ para \emph{Está casado (a)}; $4$ para \emph{Está separado (a) o divorciado (a)}; $5$ para \emph{Está viudo (a)}; y $6$ para \emph{Está soltero (a)}. Se renombrará por \textbf{estado\_civil} en los datos limpios y el grupo base será $6 =$ \emph{Está soltero (a)} 
  \item \emph{P6080}: ¿se reconoce dentro de alguna etnia? Para capturar brechas salariales entre diferentes etnias. Es una variable cualitativa que toma el valor de $1$ para \emph{Indígena}; $2$ para \emph{Gitano (a) (Rom)}; $3$ para \emph{Raizal del archipiélago de San Andrés, Providencia y Santa Catalina}; $4$ para \emph{Palenquero (a) de San Basilio}; $5$ para \emph{Negro (a), mulato (a) (afrodescendiente), afrocolombiano(a)}; y $6$ para \emph{Ninguno de los anteriores}. Se renombrará por \textbf{etnia} en los datos limpios y el grupo base será $6 =$ \emph{Ninguno de los anteriores} 
- \item \emph{P3042}: ¿cuál es el mayor nivel educativo alcanzado y el último grado o semestre aprobado? Para capturar si se cumple la teoría del capital humano. Es una variable cualitativa que toma el valor de $1$ para \emph{Ninguno}; $2$ para \emph{Preescolar}; $3$ para \emph{Básica primaria (1o - 5o)}; $4$ para \emph{Básica secundaria (6o - 9o)}; $5$ para \emph{Media académica (Bachillerato clásico)}; $6$ para \emph{Media técnica (Bachillerato técnico)}; $7$ para \emph{Normalista}; $8$ para \emph{Técnica profesional}; $9$ para \emph{Tecnológica}; $10$ para \emph{Universitaria}; $11$ para \emph{Especialización}; $12$ para \emph{Maestría}; $13$ para \emph{Doctorado}; y $99$ para \emph{No sabe, no informa}. Se renombrará por \textbf{educacion} en los datos limpios y el grupo base será $1 =$ \emph{Ninguno} 
+ \item \emph{P3042}: ¿cuál es el mayor nivel educativo alcanzado y el último grado o semestre aprobado? Para capturar si se cumple la teoría del capital humano. Es una variable cualitativa que toma el valor de $1$ para \emph{Ninguno}; $2$ para \emph{Preescolar}; $3$ para \emph{Básica primaria (1o - 5o)}; $4$ para \emph{Básica secundaria (6o - 9o)}; $5$ para \emph{Media académica (Bachillerato clásico)}; $6$ para \emph{Media técnica (Bachillerato técnico)}; $7$ para \emph{Normalista}; $8$ para \emph{Técnica profesional}; $9$ para \emph{Tecnológica}; $10$ para \emph{Universitaria}; $11$ para \emph{Especialización}; $12$ para \emph{Maestría}; $13$ para \emph{Doctorado}; y $99$ para \emph{No sabe, no informa}. Se renombrará por \textbf{educacion} en los datos limpios y el grupo base será $1 =$ \emph{Ninguno}
+ \item \emph{Experiencia potencial}: pretende ser una aproximación a la experiencia laboral en base a la edad y el nivel educativo, dado que no se pregunta directamente cuántos años de experiencia tiene la persona. Es una variable numérica que se calcula así: si la persona tiene un nivel educativo de \emph{Básica secundaria} o menor será la \texttt{edad - $15$}; si la persona tiene un nivel educativo entre \emph{Bachillerato clásico} y \emph{Normalista} será la \texttt{edad - $17$}; si la persona tiene un nivel educativo entre \emph{Técnica Profesional} y \emph{Tecnológica} será la \texttt{edad - $20$}; y, si la persona tiene un nivel educativo de \emph{Universitaria} o superior será la \texttt{edad - $22$}. Se nombrará \textbf{exp\_potencial} en los datos limpios
 \end{itemize}
 
-Del modulo de \emph{Ocupados}:
+Del módulo de \emph{Ocupados}:
 
 \begin{itemize}
- \item \emph{DIRECTORIO}, \emph{SECUENCIA\_P} y \emph{ORDEN}: son los identificadores de la vivienda, hogar y persona, respectivamente. Estas variables se concatenan en una sola para obtener un identificador y este se utiliza a modo de llave para unir los diferentes modulos. La unión de estas variables se nombrará como \textbf{id\_persona} en los datos limpios
+ \item \emph{DIRECTORIO}, \emph{SECUENCIA\_P} y \emph{ORDEN}: son los identificadores de la vivienda, hogar y persona, respectivamente. Estas variables se concatenan en una sola para obtener un identificador y este se utiliza a modo de llave para unir los diferentes módulos. La unión de estas variables se nombrará como \textbf{id\_persona} en los datos limpios
  \item \emph{AREA}: es la variable que permite filtrar los datos por área. En este caso, como se trabaja con el Área Metropolitana del Valle de Aburrá, se filtrará por el valor $05$ de la variable. Conservará el nombre \textbf{area} en los datos limpios
- \item \emph{INGLABO}: será la variable respuesta, ya que hace referencia a los ingresos laborales mensuales de la persona.Es una variable numérica. Se renombrará por \textbf{salario} en los datos limpios
+ \item \emph{INGLABO}: será la variable respuesta, ya que hace referencia a los ingresos laborales mensuales de la persona. Es una variable numérica. Se renombrará por \textbf{salario} en los datos limpios
  \item \emph{P6440}: ¿para realizar este trabajo tiene usted algún tipo de contrato? Pretende ser una aproximación para capturar información de formalidad e informalidad. Es una variable cualitativa que toma el valor de $1$ si responde que \emph{Sí} y $2$ si responde que \emph{No}. Se renombrará por \textbf{contrato} en los datos limpios y el grupo base será $2 =$ \emph{No} 
- \item \emph{P6920}: ¿está cotizando actualmente a un fondo de pensiones? También intenta aproximar a las personas que son formales e informales. Pues, es poco común que los informales coticen a pensión. No se utiliza afiliación a salud, pues, existe una gran cobertura de salud bajo regimen subsidiado en Colombia, lo que no permite segmentar correctamente formales de informales. Es una variable cualitativa que toma el valor de $1$ si responde que \emph{Sí}; $2$ si responde que \emph{No}; y $3$ si responde que \emph{Ya es pensionado}. Se renombrará por \textbf{cotiza\_pension} en los datos limpios y el grupo base será $3 =$ \emph{Ya es pensionado} 
- \item \emph{P6960}: ¿cuántos años lleva afiliado al fondo de pensiones? Dado que no se pregunta directamente cuántos años de experiencia tiene la persona, se intenta aproximar la experiencia por medio de los años cotizados a pensión. Esto claramente excluirá a la población informal, pero es la variable más próxima a la experiencia. Es una variable numérica. Se renombrará por \textbf{experiencia} en los datos limpios
+ \item \emph{P6920}: ¿está cotizando actualmente a un fondo de pensiones? También intenta aproximar a las personas que son formales e informales. Pues, es poco común que los informales coticen a pensión. No se utiliza afiliación a salud, pues, existe una gran cobertura de salud bajo régimen subsidiado en Colombia, lo que no permite segmentar correctamente formales de informales. Es una variable cualitativa que toma el valor de $1$ si responde que \emph{Sí}; $2$ si responde que \emph{No}; y $3$ si responde que \emph{Ya es pensionado}. Se renombrará por \textbf{cotiza\_pension} en los datos limpios y el grupo base será $3 =$ \emph{Ya es pensionado} 
+ \item \emph{P6960}: ¿cuántos años lleva afiliado al fondo de pensiones? Se intenta aproximar la experiencia por medio de los años cotizados a pensión para contrastar también con la experiencia potencial. Además, porque la experiencia potencial supone que las personas trabajan de manera continua sin periodos de desempleo. Se debe anotar que esta variable excluirá a la mayoría de población informal, pues estos por lo general no cotizan. Es una variable numérica. Se renombrará por \textbf{exp\_cotiza} en los datos limpios
  \end{itemize}
  
 \subsection{Limpieza de Datos}
  
-Una vez elgidas las variables, lo siguiente es alistar los datos para realizar el cruce. Lo primero es leer solo las variables seleccionadas (se tiene la precación de leer toda la base como caratér, para evitar que se eliminen 0 a la izquierda en columnas de tipo texto). Después, filtrar los datos por área, pues las áreas diferentes al Área Metropolitana del Valle de Aburrá y las demás variables no son de interés para este estudio.
+Una vez elegidas las variables, lo siguiente es alistar los datos para realizar el cruce. Lo primero es leer solo las variables seleccionadas (se tiene la precaución de leer toda la base como caráter, para evitar que se eliminen 0 a la izquierda en columnas de tipo texto). Después, filtrar los datos por área, pues las áreas diferentes al Área Metropolitana del Valle de Aburrá y las demás variables no son de interés para este estudio.
 
 ```{r}
-# Se leen los datos y se seleccionan únicamente las variables de interés en los dos modulos
+# Se leen los datos y se seleccionan únicamente las variables de interés en los dos módulos
 
 modulo_caracteristicas <- fread("sep2022/Caracteristicas generales, seguridad social en salud y educacion.CSV",
                                 colClasses = "character", # para evitar la eliminación de 0 a la izquierda, como en el caso de area
@@ -127,7 +128,7 @@ modulo_caracteristicas <- modulo_caracteristicas[, c("id_persona", "AREA", "P327
 modulo_ocupados <- modulo_ocupados[, c("id_persona", "AREA", "INGLABO", "P6440", "P6920", "P6960")]
 ```
 
-Finalmente, se cambia la clase de cada variable a la que le corresponde y se establecen los grupos base en las variables de tipo cualitativas.
+También, se cambia la clase de cada variable a la que le corresponde y se establecen los grupos base en las variables de tipo cualitativas.
 
 ```{r}
 # Se renombran las variables, se le dan las clases correctas a cada variable y se establecen los grupos base
@@ -140,37 +141,55 @@ modulo_caracteristicas$edad <- as.numeric(modulo_caracteristicas$edad) # Se camb
 modulo_caracteristicas$jefe_hogar <- as.factor(modulo_caracteristicas$jefe_hogar) # Se cambia a factor
 modulo_caracteristicas$jefe_hogar <- relevel(modulo_caracteristicas$jefe_hogar, ref = "9") # Se establece el grupo base como Otro no pariente
 modulo_caracteristicas$estado_civil <- as.factor(modulo_caracteristicas$estado_civil) # Se cambia a factor
-modulo_caracteristicas$estado_civil <- relevel(modulo_caracteristicas$estado_civil, ref = "6") # Se establece el grupo base como Esta soltero (a)
+modulo_caracteristicas$estado_civil <- relevel(modulo_caracteristicas$estado_civil, ref = "6") # Se establece el grupo base como Está soltero (a)
 modulo_caracteristicas$etnia <- as.factor(modulo_caracteristicas$etnia) # Se cambia a factor
 modulo_caracteristicas$etnia <- relevel(modulo_caracteristicas$etnia, ref = "6") # Se establece el grupo base como Ninguno de los anteriores
 modulo_caracteristicas$educacion <- as.factor(modulo_caracteristicas$educacion) # Se cambia a factor
 modulo_caracteristicas$educacion <- relevel(modulo_caracteristicas$educacion, ref = "1") # Se establece el grupo base como Ninguno
 
 
-modulo_ocupados <- rename(modulo_ocupados, area = AREA, salario = INGLABO, contrato = P6440, cotiza_pension = P6920, experiencia = P6960)
+modulo_ocupados <- rename(modulo_ocupados, area = AREA, salario = INGLABO, contrato = P6440, cotiza_pension = P6920, exp_cotiza = P6960)
 
 modulo_ocupados$salario <- as.numeric(modulo_ocupados$salario) # Se cambia a numérico
 modulo_ocupados$contrato <- as.factor(modulo_ocupados$contrato) # Se cambia a factor
 modulo_ocupados$contrato <- relevel(modulo_ocupados$contrato, ref = "2") # Se establece el grupo base como No
 modulo_ocupados$cotiza_pension <- as.factor(modulo_ocupados$cotiza_pension) # Se cambia a factor
 modulo_ocupados$cotiza_pension <- relevel(modulo_ocupados$cotiza_pension, ref = "3") # Se establece el grupo base como Ya es pensionado
-modulo_ocupados$experiencia <- as.numeric(modulo_ocupados$experiencia) # Se cambia a numérico
+modulo_ocupados$exp_cotiza <- as.numeric(modulo_ocupados$exp_cotiza) # Se cambia a numérico
 ```
 
-En las tablas 1 y 2 se puede observar el alistamiento de cada modulo por separado:
+Finalmente, una vez las demás variables están listas, se construye la variable \emph{exp\_potencial} al restar la edad promedio de los graduados en cada nivel educativo a la edad
 
 ```{r}
-kable(head(modulo_caracteristicas), caption = "Datos Modulo de Características Generales", escape = F, booktab = T, align = "c", row.names = T)
+for (i in 1:nrow(modulo_caracteristicas)) {
+  if (modulo_caracteristicas$educacion[i] %in% c(1, 2, 3, 4, 99)) {
+    modulo_caracteristicas$exp_potencial[i] <- modulo_caracteristicas$edad[i] - 15
+  } else if (modulo_caracteristicas$educacion[i] %in% c(5, 6, 7)) {
+    modulo_caracteristicas$exp_potencial[i] <- modulo_caracteristicas$edad[i] - 17
+  } else if (modulo_caracteristicas$educacion[i] %in% c(8, 9)) {
+    modulo_caracteristicas$exp_potencial[i] <- modulo_caracteristicas$edad[i] - 20
+  } else {
+    modulo_caracteristicas$exp_potencial[i] <- modulo_caracteristicas$edad[i] - 22
+  }
+} # Se evalúa cada elemento de educación con un ciclo for y se le asigna la resta según sea el caso
 
-kable(head(modulo_ocupados), caption = "Datos Modulo de Ocupados", escape = F, booktab = T, align = "c", row.names = T)
+modulo_caracteristicas$exp_potencial <- as.numeric(modulo_caracteristicas$exp_potencial) # Se establece como numérico
 ```
 
-\subsection{Cruce de Modulos}
+```{r}
+kable(head(modulo_caracteristicas), caption = "Datos Módulo de Características Generales", escape = F, booktab = T, align = "c", row.names = F)
 
-Con los datos ya limpios, se procede a realizar un inner join con la función \texttt{merge} del paquete \texttt{base}. De esta manera se unirán las variables de los dos modulos solo en los casos en que el \textbf{id\_persona} se encuentre en ambos modulos.
+kable(head(modulo_ocupados), caption = "Datos Módulo de Ocupados", escape = F, booktab = T, align = "c", row.names = F)
+```
+
+En las tablas 1 y 2 se puede observar el alistamiento de cada módulo por separado.
+
+\subsection{Cruce de módulos}
+
+Con los datos ya limpios, se procede a realizar un inner join con la función \texttt{merge} del paquete \texttt{base}. De esta manera se unirán las variables de los dos módulos solo en los casos en que el \textbf{id\_persona} se encuentre en ambos módulos.
 
 ```{r, include = FALSE}
-# Antes, se verifica que las llaves sean únicas para evitar cualquiér tipo de problema en la unión
+# Antes, se verifica que las llaves sean únicas para evitar cualquier tipo de problema en la unión
 length(modulo_caracteristicas$id_persona) == length(unique(modulo_caracteristicas$id_persona))
 
 length(modulo_ocupados$id_persona) == length(unique(modulo_ocupados$id_persona))
@@ -185,11 +204,29 @@ datos_limpios <- rename(datos_limpios, area = area.x)
 
 # Otra verificación de que la unión es correcta, es que el número de datos de ocupados y datos limpios es igual
 length(nrow(modulo_caracteristicas)) == length(nrow(datos_limpios))
-```
 
-Realizada la unión, en la tabla 3 se puede visualizar la estructura final de los datos que se ingresarán al modelo:
+# Se guardan los datos limpios en un nuevo dataset
+fwrite(datos_limpios, file = "sep2022/datosLimpios.CSV")
+```
 
 ```{r}
-kable(head(datos_limpios), caption = "Datos Listos para Modelar", escape = F, booktab = T, align = "c", row.names = T)
+kable(
+  head(datos_limpios[, c("id_persona", "area", "sexo", "edad",
+                         "jefe_hogar", "estado_civil", "etnia")]),
+  caption = "Datos Listos para Modelar 1",
+  escape = F,
+  booktab = T,
+  align = "c",
+  row.names = T)
+
+kable(
+  head(datos_limpios[, c("educacion", "salario", "contrato",
+                         "cotiza_pension", "exp_cotiza", "exp_potencial")]),
+  caption = "Datos Listos para Modelar 2",
+  escape = F,
+  booktab = T,
+  align = "c",
+  row.names = T)
 ```
 
+Realizada la unión, en las tablas 3 y 4 se puede visualizar la estructura final de los datos que se ingresarán al modelo.
