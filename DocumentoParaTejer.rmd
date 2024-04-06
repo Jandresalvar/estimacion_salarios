@@ -13,6 +13,7 @@ header-includes:
 - \renewcommand{\listtablename}{Lista de Tablas}
 - \usepackage{caption}
 - \captionsetup[table]{name=Tabla}
+- \captionsetup[figure]{name=Figura}
 output:
   pdf_document: 
     number_sections: true
@@ -32,8 +33,9 @@ library(kableExtra)
 library(knitr)
 library(leaps)
 library(data.table)
-library(dplyr)
+library(tidyverse)
 library(stats)
+library(formattable)
 ```
 
 ```{=tex}
@@ -94,11 +96,16 @@ Una vez elegidas las variables, lo siguiente es alistar los datos para realizar 
 
 modulo_caracteristicas <- fread("sep2022/Caracteristicas generales, seguridad social en salud y educacion.CSV",
                                 colClasses = "character", # para evitar la eliminación de 0 a la izquierda, como en el caso de area
-                                select = c("DIRECTORIO", "SECUENCIA_P", "ORDEN", "AREA", "P3271", "P6040", "P6050", "P6070", "P6080", "P3042")) 
+                                select = c("DIRECTORIO", "SECUENCIA_P",
+                                           "ORDEN", "AREA", "P3271",
+                                           "P6040", "P6050",
+                                           "P6070", "P6080", "P3042")) 
 
 modulo_ocupados <- fread("sep2022/Ocupados.CSV",
                          colClasses = "character",
-                         select = c("DIRECTORIO", "SECUENCIA_P", "ORDEN", "AREA", "INGLABO", "P6440", "P6920", "P6960"))
+                         select = c("DIRECTORIO", "SECUENCIA_P",
+                                    "ORDEN", "AREA", "INGLABO",
+                                    "P6440", "P6920", "P6960"))
 
 ```
 
@@ -123,9 +130,14 @@ modulo_ocupados$id_persona <- paste(modulo_ocupados$DIRECTORIO,
                                     sep = "")
 
 # Se eliminan las variables "DIRECTORIO", "SECUENCIA_P", "ORDEN" y "HOGAR"
-modulo_caracteristicas <- modulo_caracteristicas[, c("id_persona", "AREA", "P3271", "P6040", "P6050", "P6070", "P6080", "P3042")]
+modulo_caracteristicas <- modulo_caracteristicas[, c("id_persona", "AREA",
+                                                     "P3271", "P6040",
+                                                     "P6050", "P6070",
+                                                     "P6080", "P3042")]
 
-modulo_ocupados <- modulo_ocupados[, c("id_persona", "AREA", "INGLABO", "P6440", "P6920", "P6960")]
+modulo_ocupados <- modulo_ocupados[, c("id_persona", "AREA",
+                                       "INGLABO", "P6440",
+                                       "P6920", "P6960")]
 ```
 
 También, se cambia la clase de cada variable a la que le corresponde y se establecen los grupos base en las variables de tipo cualitativas.
@@ -133,7 +145,10 @@ También, se cambia la clase de cada variable a la que le corresponde y se estab
 ```{r}
 # Se renombran las variables, se le dan las clases correctas a cada variable y se establecen los grupos base
 
-modulo_caracteristicas <- rename(modulo_caracteristicas, area = AREA, sexo = P3271, edad = P6040, jefe_hogar = P6050, estado_civil = P6070, etnia = P6080, educacion = P3042)
+modulo_caracteristicas <- rename(modulo_caracteristicas, area = AREA,
+                                 sexo = P3271, edad = P6040,
+                                 jefe_hogar = P6050, estado_civil = P6070,
+                                 etnia = P6080, educacion = P3042)
 
 modulo_caracteristicas$sexo <- as.factor(modulo_caracteristicas$sexo) # Se cambia a factor
 modulo_caracteristicas$sexo <- relevel(modulo_caracteristicas$sexo, ref = "1") # Se establece el grupo base como Masculino
@@ -148,7 +163,9 @@ modulo_caracteristicas$educacion <- as.factor(modulo_caracteristicas$educacion) 
 modulo_caracteristicas$educacion <- relevel(modulo_caracteristicas$educacion, ref = "1") # Se establece el grupo base como Ninguno
 
 
-modulo_ocupados <- rename(modulo_ocupados, area = AREA, salario = INGLABO, contrato = P6440, cotiza_pension = P6920, exp_cotiza = P6960)
+modulo_ocupados <- rename(modulo_ocupados, area = AREA,
+                          salario = INGLABO, contrato = P6440,
+                          cotiza_pension = P6920, exp_cotiza = P6960)
 
 modulo_ocupados$salario <- as.numeric(modulo_ocupados$salario) # Se cambia a numérico
 modulo_ocupados$contrato <- as.factor(modulo_ocupados$contrato) # Se cambia a factor
@@ -177,9 +194,20 @@ modulo_caracteristicas$exp_potencial <- as.numeric(modulo_caracteristicas$exp_po
 ```
 
 ```{r}
-kable(head(modulo_caracteristicas), caption = "Datos Módulo de Características Generales", escape = F, booktab = T, align = "c", row.names = F)
+kable(
+  head(modulo_caracteristicas),
+  caption = "Datos Módulo de Características Generales",
+  escape = F,
+  booktab = T,
+  align = "c",
+  row.names = F)
 
-kable(head(modulo_ocupados), caption = "Datos Módulo de Ocupados", escape = F, booktab = T, align = "c", row.names = F)
+kable(head(modulo_ocupados),
+      caption = "Datos Módulo de Ocupados",
+      escape = F,
+      booktab = T,
+      align = "c",
+      row.names = F)
 ```
 
 En las tablas 1 y 2 se puede observar el alistamiento de cada módulo por separado.
@@ -232,3 +260,57 @@ kable(
 Realizada la unión, en las tablas 3 y 4 se puede visualizar la estructura final de los datos de las variables de interés.
 
 \section{Análisis Descriptivo de las Variables}
+
+\subsection{Variables Numéricas}
+\subsubsection{Salario (INGLABO)}
+
+```{r}
+# Kable no renderiza la salida de summary. Procedo a calcular estadísticas descriptivas manualmente
+salario_summary <- c(
+  min(datos_cruce$salario, na.rm = TRUE),
+  quantile(datos_cruce$salario, probs = 0.25, na.rm = TRUE),
+  median(datos_cruce$salario, na.rm = TRUE),
+  mean(datos_cruce$salario, na.rm = TRUE),
+  quantile(datos_cruce$salario, probs = 0.75, na.rm = TRUE),
+  max(datos_cruce$salario, na.rm = TRUE),
+  sum(is.na(datos_cruce$salario))
+)
+
+salario_summary <- format(salario_summary, big.mark = ".",
+                          decimal.mark = ",", scientific = FALSE)
+
+# Se crea una tabla con los resultados
+salario_table <- matrix(salario_summary, nrow = 1)
+colnames(salario_table) <- c("Mínimo", "Percentil 25", "Mediana", "Promedio", "Percentil 75", "Máximo", "NA's")
+
+# Mostrar la tabla con kable
+kable(
+  salario_table,
+  caption = "Resumen de la variable salario",
+  escape = F,
+  booktab = T,
+  align = "c")
+
+```
+
+```{r, fig.cap = "Histograma de Salario", warning = FALSE}
+# Histograma
+ggplot(datos_cruce, aes(x = salario)) +
+  geom_histogram(fill = "skyblue", color = "black", bins = 30) +
+  labs(title = NULL,
+       x = "Salario",
+       y = "Frecuencia") +
+  scale_x_continuous(labels = scales::comma_format(big.mark = ".")) +
+  theme_minimal()
+```
+
+```{r, fig.cap = "Diagrama de Caja y Bigotes de Salario", warning = FALSE}
+# Diagrama de caja y bigotes
+ggplot(datos_cruce, aes(x = "", y = salario)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(title = NULL,
+       x = NULL,  # Elimina la etiqueta del eje x
+       y = "Salario") +
+  scale_y_continuous(labels = scales::comma_format(big.mark = ".")) +
+  theme_minimal()
+```
