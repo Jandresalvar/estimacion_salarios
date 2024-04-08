@@ -14,9 +14,12 @@ header-includes:
 - \usepackage{caption}
 - \captionsetup[table]{name=Tabla}
 - \captionsetup[figure]{name=Figura}
+- \usepackage{graphicx}
 output:
   pdf_document: 
     number_sections: true
+    fig_width: 5
+    fig_height: 4
   word_document: default
 fontsize: 12pt
 papersize: letter
@@ -273,25 +276,27 @@ salario_summary <- c(
   mean(datos_cruce$salario, na.rm = TRUE),
   quantile(datos_cruce$salario, probs = 0.75, na.rm = TRUE),
   max(datos_cruce$salario, na.rm = TRUE),
-  sum(is.na(datos_cruce$salario))
+  sum(is.na(datos_cruce$salario)),
+  sum(datos_cruce$salario == 0, na.rm = TRUE)
 )
 
 salario_summary <- format(salario_summary, big.mark = ".",
                           decimal.mark = ",", scientific = FALSE)
 
 # Se crea una tabla con los resultados
-salario_table <- matrix(salario_summary, nrow = 1)
-colnames(salario_table) <- c("Mínimo", "Percentil 25", "Mediana", "Promedio", "Percentil 75", "Máximo", "NA's")
+salario_tabla <- matrix(salario_summary, nrow = 1)
+colnames(salario_tabla) <- c("Mínimo", "Cuartil 1", "Mediana", "Promedio", "Cuartil 3", "Máximo", "NA's", "Ceros")
 
 # Mostrar la tabla con kable
 kable(
-  salario_table,
-  caption = "Resumen de la variable salario",
+  salario_tabla,
+  caption = "Resumen de la Variable Salario",
   escape = F,
   booktab = T,
   align = "c")
-
 ```
+
+En la tabla $5$ se observa que la variable salario tiene un claro sesgo positivo, que se nota por la diferencia entre media y mediana. Este se produce por la aparicion de datos de ingreso muy elevados y se deberán tratar de manera adecuada para evitar que se conviertan en datos influyentes en la regresión.
 
 ```{r, fig.cap = "Histograma de Salario", warning = FALSE}
 # Histograma
@@ -314,3 +319,107 @@ ggplot(datos_cruce, aes(x = "", y = salario)) +
   scale_y_continuous(labels = scales::comma_format(big.mark = ".")) +
   theme_minimal()
 ```
+
+En las figuras $1$ y $2$ se confirma el patrón de sesgo de cola derecha, en donde hay presencia de datos extremos en la distribución. La variable salario se debe incluir después de tomar logaritmo natural, lo cual es común en este tipo de estimación.
+
+Lo primero es eliminar los NA's y valores en 0, dado que no aportarán información al modelo.
+
+```{r}
+datos_cruce <- subset(datos_cruce, !is.na(salario) & salario != 0)
+```
+
+Después, mediante el método de Tukey se identifican los valores extremos al calcular un límite inferior y superior mediante la multiplicación de el rango intercuartílico con el cuartil 1 y 3:
+
+```{r, fig.cap = "Diagrama de Caja y Bigotes de Salario con Valores Extremos"}
+q1 <- quantile(datos_cruce$salario, 0.05)
+q3 <- quantile(datos_cruce$salario, 0.95)
+
+iqr <- q3 - q1 # rango intercuatílico
+
+limite_inferior <- q1 - iqr
+limite_superior <- q3 + iqr
+
+valores_extremos <- datos_cruce$salario[datos_cruce$salario < limite_inferior | datos_cruce$salario > limite_superior]
+
+
+ggplot(datos_cruce, aes(x = "", y = salario)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  geom_point(data = datos_cruce[datos_cruce$salario %in% valores_extremos, ], aes(x = "", y = salario), color = "red", size = 3) +
+  labs(title = NULL,
+       x = NULL,
+       y = "Salario") +
+  scale_y_continuous(labels = scales::comma_format(big.mark = ".",
+                                                   decimal.mark = ",")) +
+  theme_minimal()
+```
+
+Luego de identificar los valores extremos potencialmente influyentes, se aplica el método de winsorización, donde los valores extremos se reemplazan por los límites correspondientes.
+
+```{r}
+datos_cruce$salario[datos_cruce$salario < limite_inferior] <- limite_inferior
+datos_cruce$salario[datos_cruce$salario > limite_superior] <- limite_superior
+```
+
+Finalmente, corregidos los valores extremos se procede a aplicar logaritmo natural y se deja la variable lista para ingresar al modelo. En la figura $4$ se observa que el sesgo se eliminó y que es probable que la estimación mejore por la no presencia de datos extremos:
+```{r, fig.cap = "Histograma del Logaritmo de Salario"}
+datos_cruce$salario <- log(datos_cruce$salario)
+
+ggplot(datos_cruce, aes(x = salario)) +
+  geom_histogram(fill = "skyblue", color = "black", bins = 30) +
+  labs(title = NULL,
+       x = "Logaritmo de Salario",
+       y = "Frecuencia") +
+  scale_x_continuous(labels = scales::comma_format(big.mark = ".",
+                                                   decimal.mark = ",")) +
+  theme_minimal()
+```
+
+\subsubsection{Edad}
+
+```{r}
+edad_summary <- c(
+  min(datos_cruce$edad, na.rm = TRUE),
+  quantile(datos_cruce$edad, probs = 0.25, na.rm = TRUE),
+  median(datos_cruce$edad, na.rm = TRUE),
+  mean(datos_cruce$edad, na.rm = TRUE),
+  quantile(datos_cruce$edad, probs = 0.75, na.rm = TRUE),
+  max(datos_cruce$edad, na.rm = TRUE),
+  sum(is.na(datos_cruce$edad))
+)
+
+edad_tabla <- matrix(edad_summary, nrow = 1)
+colnames(edad_tabla) <- c("Mínimo", "Cuartil 1", "Mediana", "Promedio", "Cuartil 3", "Máximo", "NA's")
+
+kable(
+  edad_tabla,
+  caption = "Resumen de la Variable Edad",
+  escape = F,
+  booktab = T,
+  align = "c")
+```
+
+En la tabla $6$ se observa que la variable edad no tiene sesgo, que se evidencia por la diferencia entre media y mediana. Tampoco tiene datos faltantes, por lo que se intuye que está lista para ingresar al modelo.
+
+```{r, fig.cap = "Histograma de Edad", warning = FALSE}
+# Histograma
+ggplot(datos_cruce, aes(x = edad)) +
+  geom_histogram(fill = "skyblue", color = "black", bins = 30) +
+  labs(title = NULL,
+       x = "Edad",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+```{r, fig.cap = "Diagrama de Caja y Bigotes de Edad", warning = FALSE}
+# Diagrama de caja y bigotes
+ggplot(datos_cruce, aes(x = "", y = edad)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(title = NULL,
+       x = NULL,  # Elimina la etiqueta del eje x
+       y = "Edad") +
+  theme_minimal()
+```
+
+En las figuras $5$ y $6$ se evidencia que no hay señales de sesgo y que la variable no necesita transformación ni tratamiento de datos.
+
+\subsubsection{Experiencia Potencial}
