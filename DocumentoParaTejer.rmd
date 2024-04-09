@@ -18,8 +18,8 @@ header-includes:
 output:
   pdf_document: 
     number_sections: true
-    fig_width: 5
-    fig_height: 4
+    fig_width: 4
+    fig_height: 3.5
   word_document: default
 fontsize: 12pt
 papersize: letter
@@ -71,12 +71,11 @@ Del módulo de \emph{Características generales, seguridad social en salud y edu
  \item \emph{DIRECTORIO}, \emph{SECUENCIA\_P} y \emph{ORDEN}: son los identificadores de la vivienda, hogar y persona, respectivamente. Estas variables se concatenan en una sola para obtener un identificador y este se utiliza a modo de llave para unir los diferentes módulos. La unión de estas variables se nombrará como \textbf{id\_persona} en los datos limpios
  \item \emph{AREA}: es la variable que permite filtrar los datos por área. En este caso, como se trabaja con el Área Metropolitana del Valle de Aburrá, se filtrará por el valor $05$ de la variable. Conservará el nombre \textbf{area} en los datos limpios
  \item \emph{P3271}: ¿cuál es el sexo al nacer? Para capturar si hay brechas salariales asociadas al sexo. Es una variable cualitativa que toma el valor de $1$ si responde \emph{Masculino} y $2$ si responde \emph{Femenino}. Se renombrará por \textbf{sexo} en los datos limpios y el grupo base será $1 =$ \emph{Masculino}
- \item \emph{P6040}: ¿cuántos años cumplidos tiene? Para capturar diferencias salariales entre edades. Es una variable numérica. Se renombrará por \textbf{edad} en los datos limpios
  \item \emph{P6050}: ¿cuál es el parentesco con el jefe del hogar? Para capturar cómo los roles en el hogar pueden influenciar el salario. Es una variable cualitativa que toma el valor de $1$ para \emph{Jefe (a) del hogar}; $2$ para \emph{Pareja, esposo(a), cónyuge, compañero(a)}; $3$ para \emph{Hijo(a), hijastro(a)}; $4$ para \emph{Nieto(a)}; $5$ para \emph{Otro pariente}; $6$ para \emph{Empleado(a) del servicio doméstico y sus parientes}; $7$ para \emph{Pensionista}; $8$ para \emph{Trabajador}; y $9$ para \emph{Otro no pariente}. Se renombrará por \textbf{jefe\_hogar} en los datos limpios y el grupo base será $9 =$ \emph{Otro no pariente}
   \item \emph{P6070}: estado civil. Es una variable cualitativa que toma el valor de $1$ para \emph{No está casado(a) y vive en pareja hace menos de dos años}; $2$ para \emph{No está casado (a) y vive en pareja hace dos años o más}; $3$ para \emph{Está casado (a)}; $4$ para \emph{Está separado (a) o divorciado (a)}; $5$ para \emph{Está viudo (a)}; y $6$ para \emph{Está soltero (a)}. Se renombrará por \textbf{estado\_civil} en los datos limpios y el grupo base será $6 =$ \emph{Está soltero (a)} 
  \item \emph{P6080}: ¿se reconoce dentro de alguna etnia? Para capturar brechas salariales entre diferentes etnias. Es una variable cualitativa que toma el valor de $1$ para \emph{Indígena}; $2$ para \emph{Gitano (a) (Rom)}; $3$ para \emph{Raizal del archipiélago de San Andrés, Providencia y Santa Catalina}; $4$ para \emph{Palenquero (a) de San Basilio}; $5$ para \emph{Negro (a), mulato (a) (afrodescendiente), afrocolombiano(a)}; y $6$ para \emph{Ninguno de los anteriores}. Se renombrará por \textbf{etnia} en los datos limpios y el grupo base será $6 =$ \emph{Ninguno de los anteriores} 
  \item \emph{P3042}: ¿cuál es el mayor nivel educativo alcanzado y el último grado o semestre aprobado? Para capturar si se cumple la teoría del capital humano. Es una variable cualitativa que toma el valor de $1$ para \emph{Ninguno}; $2$ para \emph{Preescolar}; $3$ para \emph{Básica primaria (1o - 5o)}; $4$ para \emph{Básica secundaria (6o - 9o)}; $5$ para \emph{Media académica (Bachillerato clásico)}; $6$ para \emph{Media técnica (Bachillerato técnico)}; $7$ para \emph{Normalista}; $8$ para \emph{Técnica profesional}; $9$ para \emph{Tecnológica}; $10$ para \emph{Universitaria}; $11$ para \emph{Especialización}; $12$ para \emph{Maestría}; $13$ para \emph{Doctorado}; y $99$ para \emph{No sabe, no informa}. Se renombrará por \textbf{educacion} en los datos limpios y el grupo base será $1 =$ \emph{Ninguno}
- \item \emph{Experiencia potencial}: pretende ser una aproximación a la experiencia laboral en base a la edad y el nivel educativo, dado que no se pregunta directamente cuántos años de experiencia tiene la persona. Es una variable numérica que se calcula así: si la persona tiene un nivel educativo de \emph{Básica secundaria} o menor será la \texttt{edad - $15$}; si la persona tiene un nivel educativo entre \emph{Bachillerato clásico} y \emph{Normalista} será la \texttt{edad - $17$}; si la persona tiene un nivel educativo entre \emph{Técnica Profesional} y \emph{Tecnológica} será la \texttt{edad - $20$}; y, si la persona tiene un nivel educativo de \emph{Universitaria} o superior será la \texttt{edad - $22$}. Se nombrará \textbf{exp\_potencial} en los datos limpios
+ \item \emph{Experiencia potencial}: pretende ser una aproximación a la experiencia laboral en base a la edad y el nivel educativo, dado que no se pregunta directamente cuántos años de experiencia tiene la persona. Es una variable numérica que se calcula así: si la persona tiene un nivel educativo de \emph{Básica secundaria} o menor será la \texttt{edad - $15$}; si la persona tiene un nivel educativo entre \emph{Bachillerato clásico} y \emph{Normalista} será la \texttt{edad - $17$}; si la persona tiene un nivel educativo entre \emph{Técnica Profesional} y \emph{Tecnológica} será la \texttt{edad - $20$}; y, si la persona tiene un nivel educativo de \emph{Universitaria} o superior será la \texttt{edad - $22$}. La inclusión de esta variable hace que se excluya la variable \emph{edad} directamente, pues la inclusión de ambas ocacionaría problemas de multicolinealidad. Además, se incluirá también la experiencia potencial al cuadrado $(experiencia\_potencial^2)$ para capturar la relación no lineal y si la relación marginal es creciente o decreciente. Se nombrará \textbf{exp\_potencial} en los datos limpios
 \end{itemize}
 
 Del módulo de \emph{Ocupados}:
@@ -87,7 +86,6 @@ Del módulo de \emph{Ocupados}:
  \item \emph{INGLABO}: será la variable respuesta, ya que hace referencia a los ingresos laborales mensuales de la persona. Es una variable numérica. Se renombrará por \textbf{salario} en los datos limpios
  \item \emph{P6440}: ¿para realizar este trabajo tiene usted algún tipo de contrato? Pretende ser una aproximación para capturar información de formalidad e informalidad. Es una variable cualitativa que toma el valor de $1$ si responde que \emph{Sí} y $2$ si responde que \emph{No}. Se renombrará por \textbf{contrato} en los datos limpios y el grupo base será $2 =$ \emph{No} 
  \item \emph{P6920}: ¿está cotizando actualmente a un fondo de pensiones? También intenta aproximar a las personas que son formales e informales. Pues, es poco común que los informales coticen a pensión. No se utiliza afiliación a salud, pues, existe una gran cobertura de salud bajo régimen subsidiado en Colombia, lo que no permite segmentar correctamente formales de informales. Es una variable cualitativa que toma el valor de $1$ si responde que \emph{Sí}; $2$ si responde que \emph{No}; y $3$ si responde que \emph{Ya es pensionado}. Se renombrará por \textbf{cotiza\_pension} en los datos limpios y el grupo base será $3 =$ \emph{Ya es pensionado} 
- \item \emph{P6960}: ¿cuántos años lleva afiliado al fondo de pensiones? Se intenta aproximar la experiencia por medio de los años cotizados a pensión para contrastar también con la experiencia potencial. Además, porque la experiencia potencial supone que las personas trabajan de manera continua sin periodos de desempleo. Se debe anotar que esta variable excluirá a la mayoría de población informal, pues estos por lo general no cotizan. Es una variable numérica. Se renombrará por \textbf{exp\_cotiza} en los datos limpios
  \end{itemize}
  
 \subsection{Limpieza de Datos}
@@ -140,7 +138,7 @@ modulo_caracteristicas <- modulo_caracteristicas[, c("id_persona", "AREA",
 
 modulo_ocupados <- modulo_ocupados[, c("id_persona", "AREA",
                                        "INGLABO", "P6440",
-                                       "P6920", "P6960")]
+                                       "P6920")]
 ```
 
 También, se cambia la clase de cada variable a la que le corresponde y se establecen los grupos base en las variables de tipo cualitativas.
@@ -168,14 +166,13 @@ modulo_caracteristicas$educacion <- relevel(modulo_caracteristicas$educacion, re
 
 modulo_ocupados <- rename(modulo_ocupados, area = AREA,
                           salario = INGLABO, contrato = P6440,
-                          cotiza_pension = P6920, exp_cotiza = P6960)
+                          cotiza_pension = P6920)
 
 modulo_ocupados$salario <- as.numeric(modulo_ocupados$salario) # Se cambia a numérico
 modulo_ocupados$contrato <- as.factor(modulo_ocupados$contrato) # Se cambia a factor
 modulo_ocupados$contrato <- relevel(modulo_ocupados$contrato, ref = "2") # Se establece el grupo base como No
 modulo_ocupados$cotiza_pension <- as.factor(modulo_ocupados$cotiza_pension) # Se cambia a factor
 modulo_ocupados$cotiza_pension <- relevel(modulo_ocupados$cotiza_pension, ref = "3") # Se establece el grupo base como Ya es pensionado
-modulo_ocupados$exp_cotiza <- as.numeric(modulo_ocupados$exp_cotiza) # Se cambia a numérico
 ```
 
 Finalmente, una vez las demás variables están listas, se construye la variable \emph{exp\_potencial} al restar la edad promedio de los graduados en cada nivel educativo a la edad
@@ -194,6 +191,8 @@ for (i in 1:nrow(modulo_caracteristicas)) {
 } # Se evalúa cada elemento de educación con un ciclo for y se le asigna la resta según sea el caso
 
 modulo_caracteristicas$exp_potencial <- as.numeric(modulo_caracteristicas$exp_potencial) # Se establece como numérico
+
+modulo_caracteristicas <- modulo_caracteristicas[, -c("edad")] # Se elimina edad
 ```
 
 ```{r}
@@ -203,14 +202,17 @@ kable(
   escape = F,
   booktab = T,
   align = "c",
-  row.names = F)
+  row.names = T
+)
 
-kable(head(modulo_ocupados),
-      caption = "Datos Módulo de Ocupados",
-      escape = F,
-      booktab = T,
-      align = "c",
-      row.names = F)
+kable(
+  head(modulo_ocupados),
+  caption = "Datos Módulo de Ocupados",
+  escape = F,
+  booktab = T,
+  align = "c",
+  row.names = T
+)
 ```
 
 En las tablas 1 y 2 se puede observar el alistamiento de cada módulo por separado.
@@ -242,22 +244,24 @@ fwrite(datos_cruce, file = "sep2022/datosCruce.CSV")
 
 ```{r}
 kable(
-  head(datos_cruce[, c("id_persona", "area", "sexo", "edad",
-                         "jefe_hogar", "estado_civil", "etnia")]),
-  caption = "Datos Cruce 1",
+  head(datos_cruce[, c("id_persona", "area", "jefe_hogar",
+                       "estado_civil", "etnia")]),
+  caption = "Datos Cruce 1 de 2",
   escape = F,
   booktab = T,
   align = "c",
-  row.names = T)
+  row.names = T
+)
 
 kable(
   head(datos_cruce[, c("educacion", "salario", "contrato",
-                         "cotiza_pension", "exp_cotiza", "exp_potencial")]),
-  caption = "Datos Cruce 2",
+                         "cotiza_pension", "exp_potencial")]),
+  caption = "Datos Cruce 2 de 2",
   escape = F,
   booktab = T,
   align = "c",
-  row.names = T)
+  row.names = T
+)
 ```
 
 Realizada la unión, en las tablas 3 y 4 se puede visualizar la estructura final de los datos de las variables de interés.
@@ -301,7 +305,8 @@ En la tabla $5$ se observa que la variable salario tiene un claro sesgo positivo
 ```{r, fig.cap = "Histograma de Salario", warning = FALSE}
 # Histograma
 ggplot(datos_cruce, aes(x = salario)) +
-  geom_histogram(fill = "skyblue", color = "black", bins = 30) +
+  geom_histogram(aes(y = ..density..), fill = "skyblue", color = "black", bins = 30) +
+  geom_density(color = "red") +
   labs(title = NULL,
        x = "Salario",
        y = "Frecuencia") +
@@ -365,7 +370,8 @@ Finalmente, corregidos los valores extremos se procede a aplicar logaritmo natur
 datos_cruce$salario <- log(datos_cruce$salario)
 
 ggplot(datos_cruce, aes(x = salario)) +
-  geom_histogram(fill = "skyblue", color = "black", bins = 30) +
+  geom_histogram(aes(y = ..density..), fill = "skyblue", color = "black", bins = 30) +
+  geom_density(color = "red") +
   labs(title = NULL,
        x = "Logaritmo de Salario",
        y = "Frecuencia") +
@@ -374,52 +380,58 @@ ggplot(datos_cruce, aes(x = salario)) +
   theme_minimal()
 ```
 
-\subsubsection{Edad}
+\subsubsection{Experiencia Potencial}
 
 ```{r}
-edad_summary <- c(
-  min(datos_cruce$edad, na.rm = TRUE),
-  quantile(datos_cruce$edad, probs = 0.25, na.rm = TRUE),
-  median(datos_cruce$edad, na.rm = TRUE),
-  mean(datos_cruce$edad, na.rm = TRUE),
-  quantile(datos_cruce$edad, probs = 0.75, na.rm = TRUE),
-  max(datos_cruce$edad, na.rm = TRUE),
-  sum(is.na(datos_cruce$edad))
+exp_summary <- c(
+  min(datos_cruce$exp_potencial, na.rm = TRUE),
+  quantile(datos_cruce$exp_potencial, probs = 0.25, na.rm = TRUE),
+  median(datos_cruce$exp_potencial, na.rm = TRUE),
+  mean(datos_cruce$exp_potencial, na.rm = TRUE),
+  quantile(datos_cruce$exp_potencial, probs = 0.75, na.rm = TRUE),
+  max(datos_cruce$exp_potencial, na.rm = TRUE),
+  sum(is.na(datos_cruce$exp_potencial))
 )
 
-edad_tabla <- matrix(edad_summary, nrow = 1)
-colnames(edad_tabla) <- c("Mínimo", "Cuartil 1", "Mediana", "Promedio", "Cuartil 3", "Máximo", "NA's")
+exp_tabla <- matrix(exp_summary, nrow = 1)
+colnames(exp_tabla) <- c("Mínimo", "Cuartil 1", "Mediana",
+                         "Promedio", "Cuartil 3", "Máximo", "NA's")
 
 kable(
-  edad_tabla,
-  caption = "Resumen de la Variable Edad",
+  exp_tabla,
+  caption = "Resumen de la Variable Experiencia Potencial",
   escape = F,
   booktab = T,
   align = "c")
 ```
 
-En la tabla $6$ se observa que la variable edad no tiene sesgo, que se evidencia por la diferencia entre media y mediana. Tampoco tiene datos faltantes, por lo que se intuye que está lista para ingresar al modelo.
+En la tabla $6$ se observa que la variable tiene un ligero sesgo positivo, que se evidencia por la diferencia entre media y mediana. También, hay presencia de datos negativos. Esto se produce porque la edad promedio de graduación de los diferentes niveles educativos es mayor que la edad de la persona. Por simplicidad, se asumirá que la experiencia de la persona es igual a $0$.
 
-```{r, fig.cap = "Histograma de Edad", warning = FALSE}
+```{r}
+datos_cruce$exp_potencial[datos_cruce$exp_potencial < 0] <- 0
+```
+
+```{r, fig.cap = "Histograma de Experiencia Potencial", warning = FALSE}
 # Histograma
-ggplot(datos_cruce, aes(x = edad)) +
-  geom_histogram(fill = "skyblue", color = "black", bins = 30) +
+ggplot(datos_cruce, aes(x = exp_potencial)) +
+  geom_histogram(aes(y = ..density..), fill = "skyblue", color = "black", bins = 30) +
+  geom_density(color = "red") +
   labs(title = NULL,
-       x = "Edad",
+       x = "Experiencia Potencial",
        y = "Frecuencia") +
   theme_minimal()
 ```
 
-```{r, fig.cap = "Diagrama de Caja y Bigotes de Edad", warning = FALSE}
+```{r, fig.cap = "Diagrama de Caja y Bigotes de Experiencia Potencial", warning = FALSE}
 # Diagrama de caja y bigotes
-ggplot(datos_cruce, aes(x = "", y = edad)) +
+ggplot(datos_cruce, aes(x = "", y = exp_potencial)) +
   geom_boxplot(fill = "skyblue", color = "black") +
   labs(title = NULL,
        x = NULL,  # Elimina la etiqueta del eje x
-       y = "Edad") +
+       y = "Experiencia Potencial") +
   theme_minimal()
 ```
 
-En las figuras $5$ y $6$ se evidencia que no hay señales de sesgo y que la variable no necesita transformación ni tratamiento de datos.
+En las figuras $5$ y $6$ se confirma la presencia de sesgo. Sin embargo se incluirá sin transformar al modelo, pues este sesgo es mínimo.
 
-\subsubsection{Experiencia Potencial}
+\subsection{Variables Cualitativas}
