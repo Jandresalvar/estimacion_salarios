@@ -71,7 +71,7 @@ Del módulo de \emph{Características generales, seguridad social en salud y edu
  \item \emph{DIRECTORIO}, \emph{SECUENCIA\_P} y \emph{ORDEN}: son los identificadores de la vivienda, hogar y persona, respectivamente. Estas variables se concatenan en una sola para obtener un identificador y este se utiliza a modo de llave para unir los diferentes módulos. La unión de estas variables se nombrará como \textbf{id\_persona} en los datos limpios
  \item \emph{AREA}: es la variable que permite filtrar los datos por área. En este caso, como se trabaja con el Área Metropolitana del Valle de Aburrá, se filtrará por el valor $05$ de la variable. Conservará el nombre \textbf{area} en los datos limpios
  \item \emph{P3271}: ¿cuál es el sexo al nacer? Para capturar si hay brechas salariales asociadas al sexo. Es una variable cualitativa que toma el valor de $1$ si responde \emph{Masculino} y $2$ si responde \emph{Femenino}. Se renombrará por \textbf{sexo} en los datos limpios y el grupo base será $1 =$ \emph{Masculino}
- \item \emph{P6050}: ¿cuál es el parentesco con el jefe del hogar? Para capturar cómo los roles en el hogar pueden influenciar el salario. Es una variable cualitativa que toma el valor de $1$ para \emph{Jefe (a) del hogar}; $2$ para \emph{Pareja, esposo(a), cónyuge, compañero(a)}; $3$ para \emph{Hijo(a), hijastro(a)}; $4$ para \emph{Nieto(a)}; $5$ para \emph{Otro pariente}; $6$ para \emph{Empleado(a) del servicio doméstico y sus parientes}; $7$ para \emph{Pensionista}; $8$ para \emph{Trabajador}; y $9$ para \emph{Otro no pariente}. Se renombrará por \textbf{jefe\_hogar} en los datos limpios y el grupo base será $9 =$ \emph{Otro no pariente}
+ \item \emph{P6050}: ¿cuál es el parentesco con el jefe del hogar? Para capturar cómo los roles en el hogar pueden influenciar el salario. Es una variable cualitativa que toma el valor de $1$ para \emph{Jefe (a) del hogar}; $2$ para \emph{Pareja, esposo(a), cónyuge, compañero(a)}; $3$ para \emph{Hijo(a), hijastro(a)}; $4$ para \emph{Padre o madre}; $5$ para \emph{Suegro(a)}; $6$ para \emph{Hermano(a) o hermanastro(a)}; $7$ para \emph{Yerno o nuera}; $8$ para \emph{Nieto(a)}; $9$ para \emph{Otro pariente}; $10$ para \emph{Empleado(a) del servicio doméstico y sus parientes}; $11$ para \emph{Pensionista}; $12$ para \emph{Trabajador}; y $13$ para \emph{Otro no pariente}. Se renombrará por \textbf{jefe\_hogar} en los datos limpios y el grupo base será $9 =$ \emph{Otro no pariente}
   \item \emph{P6070}: estado civil. Es una variable cualitativa que toma el valor de $1$ para \emph{No está casado(a) y vive en pareja hace menos de dos años}; $2$ para \emph{No está casado (a) y vive en pareja hace dos años o más}; $3$ para \emph{Está casado (a)}; $4$ para \emph{Está separado (a) o divorciado (a)}; $5$ para \emph{Está viudo (a)}; y $6$ para \emph{Está soltero (a)}. Se renombrará por \textbf{estado\_civil} en los datos limpios y el grupo base será $6 =$ \emph{Está soltero (a)} 
  \item \emph{P6080}: ¿se reconoce dentro de alguna etnia? Para capturar brechas salariales entre diferentes etnias. Es una variable cualitativa que toma el valor de $1$ para \emph{Indígena}; $2$ para \emph{Gitano (a) (Rom)}; $3$ para \emph{Raizal del archipiélago de San Andrés, Providencia y Santa Catalina}; $4$ para \emph{Palenquero (a) de San Basilio}; $5$ para \emph{Negro (a), mulato (a) (afrodescendiente), afrocolombiano(a)}; y $6$ para \emph{Ninguno de los anteriores}. Se renombrará por \textbf{etnia} en los datos limpios y el grupo base será $6 =$ \emph{Ninguno de los anteriores} 
  \item \emph{P3042}: ¿cuál es el mayor nivel educativo alcanzado y el último grado o semestre aprobado? Para capturar si se cumple la teoría del capital humano. Es una variable cualitativa que toma el valor de $1$ para \emph{Ninguno}; $2$ para \emph{Preescolar}; $3$ para \emph{Básica primaria (1o - 5o)}; $4$ para \emph{Básica secundaria (6o - 9o)}; $5$ para \emph{Media académica (Bachillerato clásico)}; $6$ para \emph{Media técnica (Bachillerato técnico)}; $7$ para \emph{Normalista}; $8$ para \emph{Técnica profesional}; $9$ para \emph{Tecnológica}; $10$ para \emph{Universitaria}; $11$ para \emph{Especialización}; $12$ para \emph{Maestría}; $13$ para \emph{Doctorado}; y $99$ para \emph{No sabe, no informa}. Se renombrará por \textbf{educacion} en los datos limpios y el grupo base será $1 =$ \emph{Ninguno}
@@ -435,3 +435,89 @@ ggplot(datos_cruce, aes(x = "", y = exp_potencial)) +
 En las figuras $5$ y $6$ se confirma la presencia de sesgo. Sin embargo se incluirá sin transformar al modelo, pues este sesgo es mínimo.
 
 \subsection{Variables Cualitativas}
+
+\subsubsection{Sexo al Nacer}
+
+```{r}
+# Se crea la tabla de frecuencias absolutas y relativas
+frec_abs <- table(datos_cruce$sexo)
+frec_rel <- prop.table(frec_abs)
+
+# Se combinan las frecuencias absolutas y relativas en un dataframe
+tabla_frecuencias <- data.frame(Sexo = names(frec_abs),
+                                `Frecuencia Absoluta` = as.numeric(frec_abs),
+                                `Frecuencia Relativa` = as.numeric(frec_rel))
+
+colnames(tabla_frecuencias) <- c("Sexo", "Frecuencia Absoluta", "Frecuencia Relativa")
+
+kable(tabla_frecuencias,
+      caption = "Tabla de Frecuencias de la variable Sexo al Nacer",
+      escape = F,
+      booktab = T,
+      align = "c",
+)
+```
+
+En la tabla $7$ se observa que la participación de cada sexo en la encuesta es similar. Sin embargo, hay más hombres que mujeres en la muestra.
+
+\subsubsection{Parentesco con el Jefe(a) del Hogar}
+
+```{r}
+# Se crea la tabla de frecuencias absolutas y relativas
+frec_abs <- table(datos_cruce$jefe_hogar)
+frec_rel <- prop.table(frec_abs)
+
+# Se combinan las frecuencias absolutas y relativas en un dataframe
+tabla_frecuencias <- data.frame(`Jefe(a) Hogar` = as.numeric(names(frec_abs)),
+                                `Frecuencia Absoluta` = as.numeric(frec_abs),
+                                `Frecuencia Relativa` = as.numeric(frec_rel))
+
+colnames(tabla_frecuencias) <- c("Parentesco Jefe(a) Hogar", "Frecuencia Absoluta",
+                                 "Frecuencia Relativa")
+tabla_frecuencias <- arrange(tabla_frecuencias, `Parentesco Jefe(a) Hogar`) # Se ordenan
+
+kable(tabla_frecuencias,
+      caption = "Tabla de Frecuencias de la variable Parentesco Jefe(a) Hogar",
+      escape = F,
+      booktab = T,
+      align = "c",
+      row.names = F
+)
+```
+
+En la tabla $8$ se observa que la participación de las personas que son jefe(a) del hogar, pareja o hijo de este es considerablemente mayores que las demás categorías. Mientras que padre o madre, suegro(a) y pensionista aparecen muy pocas veces.
+
+\subsubsection{Estado Civil}
+
+```{r}
+# Se crea la tabla de frecuencias absolutas y relativas
+frec_abs <- table(datos_cruce$estado_civil)
+frec_rel <- prop.table(frec_abs)
+
+# Se combinan las frecuencias absolutas y relativas en un dataframe
+tabla_frecuencias <- data.frame(`Estado Civil` = as.numeric(names(frec_abs)),
+                                `Frecuencia Absoluta` = as.numeric(frec_abs),
+                                `Frecuencia Relativa` = as.numeric(frec_rel))
+
+colnames(tabla_frecuencias) <- c("Estado Civil", "Frecuencia Absoluta",
+                                 "Frecuencia Relativa")
+tabla_frecuencias <- arrange(tabla_frecuencias, `Estado Civil`) # Se ordenan
+
+kable(tabla_frecuencias,
+      caption = "Tabla de Frecuencias de la variable Estado Civil",
+      escape = F,
+      booktab = T,
+      align = "c",
+      row.names = F
+)
+```
+
+En la tabla $9$ se observa que la participación de las personas que son solteras, están casadas o viven en unión libre es considerablemente mayores que las demás categorías. Se elimina la categoría NA.
+
+```{r}
+datos_cruce$estado_civil <- as.character(datos_cruce$estado_civil)
+datos_cruce <- datos_cruce[datos_cruce$estado_civil != "NA", ]
+datos_cruce$estado_civil <- as.factor(datos_cruce$estado_civil)
+datos_cruce$estado_civil <- relevel(datos_cruce$estado_civil, ref = "6")
+```
+
